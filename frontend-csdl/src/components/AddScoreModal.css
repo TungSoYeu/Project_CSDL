@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(38, 48, 70, 0.6); /* Làm tối nền hơn một chút */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Đảm bảo modal nổi lên trên */
+  transition: opacity 0.2s ease-in-out; /* Transition nhẹ cho opacity */
+}
+
+/* KHI MODAL MỞ (CÓ CLASS .open) */
+.modal-overlay.open {
+  display: flex !important; /* QUAN TRỌNG: Ép hiển thị khi có class 'open' */
+  opacity: 1 !important;   /* QUAN TRỌNG: Ép hiển thị */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 35px 45px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 450px; /* Giới hạn chiều rộng tối đa */
+  z-index: 1001;
+  animation: fadeInModal 0.3s ease-out;
+  position: relative;
+    /* Thêm để đảm bảo nó hiện ra nếu bị ẩn bởi transform */
+  transform: translate(0, 0) scale(1) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* KHI MODAL MỞ (CÓ CLASS .open) */
+.modal-overlay.open .modal-content {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0s;
+}
+
+@keyframes fadeInModal {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- CSS CHO NÚT CLOSE (X) VÀ ICON SVG --- */
+.modal-close-btn {
+  /* NOTE: Điều chỉnh vị trí top và right để giống thiết kế hơn */
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: #f0f0f0; /* Màu nền xám nhạt cho nút tròn */
+  border: none;
+  width: 38px; /* Kích thước nút tròn */
+  height: 38px; /* Kích thước nút tròn */
+  border-radius: 35%; /* Làm cho nút tròn */
+  cursor: pointer;
+  display: flex; /* Để căn giữa icon SVG */
+  align-items: center; /* Để căn giữa icon SVG */
+  justify-content: center; /* Để căn giữa icon SVG */
+  transition: background-color 0.2s ease;
+  padding: 0; /* Bỏ padding mặc định của button nếu có */
+
+}
+
+.modal-close-btn:hover {
+  background-color: #e0e0e0; /* Nền đậm hơn một chút khi hover */
+}
+
+.modal-close-icon-svg {
+  width: 20px; /* Kích thước icon X nhỏ hơn một chút để vừa nút tròn */
+  height: 20px; /* Kích thước icon X */
+  display: block;
+  /* Nếu SVG của bạn cần đổi màu, ví dụ sang màu xám đậm: */
+  /* fill: #555; */
+  /* Hoặc nếu SVG của bạn là màu đen và bạn muốn nó xám hơn: */
+  /* filter: brightness(0) saturate(100%) invert(30%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(70%); */
+}
+/* --- KẾT THÚC CSS CHO NÚT CLOSE --- */
+
+.modal-content h2 {
+  margin-top: 20px;
+  margin-bottom: 18px;
+  font-size: 20px;
+  color: #333;
+  text-align: left;
+}
+
+.modal-error {
+  color: red;
+  font-size: 0.9em;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"] {
+  width: calc(100% - 5px); /* Trừ đi padding của input */
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box; /* Quan trọng để padding không làm tăng kích thước */
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end; /* Căn các nút về phía bên phải */
+  gap: 10px; /* Khoảng cách giữa các nút */
+  margin-top: 25px;
+  margin-right: 4px;
+  margin-bottom: 3px;
+}
+
+.modal-actions button {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 550;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.modal-actions .btn-add {
+  background-color: #2563eb; /* Màu xanh dương */
+  color: white;
+}
+
+.modal-actions .btn-add:hover {
+  background-color: #1d4ed8; /* Màu xanh đậm hơn */
+}
+
+.modal-actions button:active {
+    transform: translateY(1px);
+}

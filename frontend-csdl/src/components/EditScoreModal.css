@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(38, 48, 70, 0.6); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; 
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease, visibility 0s linear 0s;
+}
+
+.modal-content.edit-modal-content { 
+  background-color: white;
+  padding: 25px 40px 30px 40px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 700px; 
+  z-index: 1001;
+  position: relative;
+  transform: translateY(-20px) scale(0.95);
+  opacity: 0;
+  visibility: hidden;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0.3s;
+}
+
+.modal-overlay.open .modal-content.edit-modal-content {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  visibility: visible;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out, visibility 0s linear 0s;
+}
+
+.modal-header-custom { 
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-top: 0px;
+}
+
+/* --- CSS CHO NÚT CLOSE (X) VÀ ICON SVG --- */
+.modal-close-btn {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: #f0f0f0; 
+  border: none;
+  width: 38px; 
+  height: 38px; 
+  border-radius: 35%; 
+  cursor: pointer;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  transition: background-color 0.2s ease;
+  padding: 0; 
+
+}
+
+.modal-close-btn:hover {
+  background-color: #e0e0e0; 
+}
+
+.modal-close-icon-svg {
+  width: 20px; 
+  height: 20px; 
+  display: block;
+}
+
+.modal-header-custom h2 {
+  margin-top: 20px;
+  margin-bottom: 18px;
+  font-size: 20px;
+  color: #333;
+  font-weight: 700;
+  text-align: left;
+}
+
+.modal-error { 
+  color: #e74c3c;
+  background-color: #fdeded;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 0.9em;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.edit-score-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr; 
+  gap: 30px; 
+  margin-bottom: 25px;
+}
+
+.edit-form-column .form-group {
+  margin-bottom: 18px;
+}
+
+.edit-form-column .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 13px; 
+  color: #555;
+}
+
+.edit-form-column .form-group input[type="text"],
+.edit-form-column .form-group input[type="number"] {
+  width: 100%;
+  padding: 10px 12px; 
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.edit-form-column .form-group input[type="text"]:focus,
+.edit-form-column .form-group input[type="number"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+.current-data-column {
+  padding-top: 5px; 
+}
+
+.data-display-group {
+  margin-bottom: 28px; 
+}
+.data-display-group:last-child {
+    margin-bottom: 18px;
+}
+
+
+.data-label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280; 
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.data-value {
+  display: block;
+  font-size: 18px; 
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+}
+
+.data-value.score-highlight {
+  color: #007bff;
+  font-size: 22px; 
+}
+
+.modal-actions.edit-modal-actions {
+  display: flex;
+  justify-content: space-between; 
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb; 
+}
+
+.modal-actions.edit-modal-actions button {
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 550;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-delete {
+  background-color: #fee2e2; 
+  color: #ef4444; 
+  border: 1px solid #fecaca;
+}
+.btn-delete:hover {
+  background-color: #fecaca;
+  color: #dc2626;
+}
+
+.btn-update {
+  background-color: #2563eb; 
+  color: white;
+  border: none;
+}
+.btn-update:hover {
+  background-color: #1d4ed8;
+}

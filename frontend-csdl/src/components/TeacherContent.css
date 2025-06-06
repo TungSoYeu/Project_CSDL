@@ -1,0 +1,185 @@
+.teacher-content-container {
+  padding: 10px 10px;
+  font-family: 'Nunito Sans', sans-serif;
+  min-height: calc(100vh - 64px);
+}
+
+.teacher-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.teacher-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.add-teacher-button {
+  background-color: #2563eb; 
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+.add-teacher-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+.add-teacher-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.teacher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.teacher-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 15px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-left: 4px solid #4A90E2; 
+}
+.teacher-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.teacher-card-avatar-section {
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+
+.teacher-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.teacher-card-info {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 25px; 
+}
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+}
+.teacher-name-group { flex-basis: 250px; }
+.teacher-id-group { flex-basis: 150px; }
+
+
+.info-label {
+  font-size: 10px;
+  color: #6b7280;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.teacher-name-value {
+    font-size: 14px;
+    color: #000000;
+}
+
+.no-items-message {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-style: italic;
+  font-size: 15px;
+}
+.pagination-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 25px;
+  padding: 10px 0;
+  gap: 10px;
+}
+.pagination-button {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.pagination-button:hover:not(:disabled) {
+  background-color: #d1d5db;
+}
+.pagination-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.pagination-info {
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .teacher-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+  .teacher-card-avatar-section {
+      margin-bottom: 15px;
+      align-self: flex-start;
+      margin-right: 0;
+  }
+  .teacher-card-info {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .info-group {
+      flex-basis: auto !important;
+      width: 100%;
+  }
+  .teacher-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .add-teacher-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

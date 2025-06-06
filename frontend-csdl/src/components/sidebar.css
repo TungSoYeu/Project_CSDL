@@ -1,0 +1,78 @@
+.sidebar-nav {
+    flex-grow: 1;
+    margin-top: 5px;
+  }
+  
+  .sidebar-nav ul {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 10px var(--base-padding);
+    border-radius: var(--border-radius-medium);
+    color: var(--secondary-color); 
+    font-weight: 500;
+    font-size: var(--font-size-nav);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    gap: 12px;
+}
+
+.nav-icon {
+    display: inline-block;
+    width: var(--nav-icon-size);
+    height: var(--nav-icon-size);
+    flex-shrink: 0;
+    filter: grayscale(80%) opacity(0.7);
+    transition: filter 0.2s ease;
+}
+
+.sidebar-nav li.active a {
+    background-color: var(--primary-color-light); 
+    color: var(--primary-color); 
+    font-weight: 700;
+}
+
+.sidebar-nav li.active a::after {
+    content: '';
+    position: absolute;
+    right: 0; 
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%; 
+    width: var(--active-bar-width); 
+    background-color: var(--primary-color); 
+    border-radius: 2px 0 0 2px; 
+}
+
+.sidebar-nav li.active a .nav-icon {
+     filter: none; 
+}
+
+
+.sidebar-nav li:not(.active) a:hover {
+    background-color: var(--primary-color-light);
+    color: var(--primary-color);
+}
+.sidebar-nav li:not(.active) a:hover .nav-icon {
+    filter: none; 
+}
+
+.logout-link {
+    color: var(--secondary-color);
+}
+.logout-link .nav-icon {
+     filter: grayscale(80%) opacity(0.7);
+}
+.logout-link:hover {
+     background-color: var(--logout-hover-bg);
+     color: var(--logout-hover-text);
+}
+.logout-link:hover .nav-icon {
+     filter: none;
+}

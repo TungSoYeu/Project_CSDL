@@ -1,0 +1,128 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(38, 48, 70, 0.6);
+  display: none; 
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.modal-overlay.open {
+  display: flex !important; 
+  opacity: 1 !important;  
+}
+
+.modal-content.add-teacher-modal-content {
+  background-color: white;
+  padding: 25px 35px 30px 35px;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 480px; 
+  position: relative;
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.2s 0.1s ease-out, transform 0.2s 0.1s ease-out;
+}
+
+.modal-overlay.open .modal-content.add-teacher-modal-content {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-close-btn-corner {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background: #f0f0f0;
+  border: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 35%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+.modal-close-btn-corner:hover {
+  background-color: #e0e0e0;
+}
+.modal-close-icon-svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.add-teacher-modal-content h2 {
+  margin-top: 20px;
+  margin-bottom: 25px;
+  font-size: 20px;
+  color: #333;
+  text-align: left;
+}
+.modal-error {
+  color: #e74c3c;
+  background-color: #fdeded;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 0.9em;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.form-group {
+  margin-bottom: 18px; 
+}
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 13px;
+  color: #555;
+}
+.form-group input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+.form-group input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+  margin-bottom: 3px;
+}
+.modal-actions .btn-add {
+  background-color: #2563eb;
+  color: white;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 10px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+.modal-actions .btn-add:hover {
+  background-color: #1d4ed8;
+}
+.modal-actions button:active {
+    transform: translateY(1px);
+}

@@ -1,0 +1,169 @@
+.class-content-container {
+  padding: 10px 10px;
+  font-family: 'Nunito Sans', sans-serif;
+  min-height: calc(100vh - 64px);
+}
+
+.class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.class-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.add-class-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+.add-class-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+.add-class-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Thẻ Lớp Học */
+.class-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.class-card {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 18px 20px; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-left: 4px solid #4A90E2; 
+}
+.class-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.class-card-info {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 30px; 
+}
+
+.info-group { 
+  display: flex;
+  flex-direction: column;
+}
+
+.class-id-group { flex-basis: 180px; }
+.subject-id-group { flex-basis: 180px; }
+.teacher-id-group-class { flex-basis: 150px; }
+
+
+.info-label {
+  font-size: 10px;
+  color: #6b7280;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #1f2937;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.class-id-value { 
+    color: #000000; 
+}
+
+.no-items-message {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-style: italic;
+  font-size: 15px;
+}
+.pagination-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 25px;
+  padding: 10px 0;
+  gap: 10px;
+}
+.pagination-button {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.pagination-button:hover:not(:disabled) {
+  background-color: #d1d5db;
+}
+.pagination-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.pagination-info {
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .class-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+  .class-card-info {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .info-group {
+      flex-basis: auto !important;
+      width: 100%;
+  }
+  .class-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .add-class-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+.student-content-container {
+  padding: 10px 10px; 
+  font-family: 'Nunito Sans', sans-serif; 
+  min-height: calc(100vh - 64px); 
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.student-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.add-student-button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-family: "Nunito Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+.add-student-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+.add-student-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.student-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.student-card {
+  display: flex;
+  align-items: center; 
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 18px 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  border-left: 5px solid #4A90E2;
+}
+.student-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.student-card-avatar-section {
+  margin-right: 20px;
+  flex-shrink: 0; 
+}
+
+.student-avatar {
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover; 
+  border: 2px solid #e0e0e0; 
+}
+
+.student-card-info {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); 
+  gap: 10px 20px; 
+  align-items: center;
+}
+
+.info-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.student-name-value {
+    font-size: 15px; 
+    font-weight: 600;
+    color: #000000;
+}
+.student-id-value, .student-major-value, .student-dob-value {
+    font-size: 15px; 
+    font-weight: 600;
+    color: #000000; 
+}
+
+.no-items-message {
+  text-align: center;
+  color: #6b7280;
+  padding: 20px;
+  font-style: italic;
+  font-size: 15px;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 25px;
+  padding: 10px 0;
+  gap: 10px;
+}
+
+.pagination-button {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px; 
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.pagination-button:hover:not(:disabled) {
+  background-color: #d1d5db;
+}
+.pagination-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.pagination-info {
+  font-size: 14px; 
+  color: #4b5563;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .student-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+  }
+  .student-card-decorator {
+    width: 100%;
+    height: 4px;
+    margin-bottom: 10px;
+    margin-right: 0;
+  }
+  .student-card-avatar-section {
+      margin-bottom: 15px;
+      align-self: center;
+  }
+  .student-card-info {
+    width: 100%;
+  }
+  .info-row {
+      grid-template-columns: 1fr; 
+      gap: 10px;
+  }
+  .student-card-actions {
+    flex-direction: row;
+    justify-content: flex-end; 
+    align-items: center;
+    padding-left: 0;
+    margin-top: 15px;
+    width: 100%;
+  }
+  .student-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .add-student-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
