@@ -3,37 +3,6 @@ import './SubjectContent.css';
 import PlusIcon from '../asset/image/top-section/plus.svg';
 import AddSubjectModal from './AddSubjectModal';
 
-// --- DỮ LIỆU MẪU CHO MÔN HỌC ---
-const generateMockSubjects = (count = 25) => {
-  const mockSubjects = [];
-  const subjectNames = [
-    "Database", "Web Development", "Operating Systems", "Computer Networks",
-    "Software Engineering Principles", "Data Structures and Algorithms", "Artificial Intelligence",
-    "Machine Learning", "Calculus I", "Linear Algebra", "Physics for Engineers",
-    "Introduction to Programming", "Object-Oriented Programming", "Digital Logic Design", "Embedded Systems"
-  ];
-  const subjectIdPrefixes = ["IT", "CS", "EM", "MI", "PH", "EE"];
-
-  const usedSubjectIds = new Set();
-
-  for (let i = 1; i <= count; i++) {
-    let subjectId;
-    do {
-      subjectId = subjectIdPrefixes[Math.floor(Math.random() * subjectIdPrefixes.length)] + String(Math.floor(Math.random() * 4000) + 1000).padStart(4, '0');
-    } while (usedSubjectIds.has(subjectId));
-    usedSubjectIds.add(subjectId);
-
-    const subjectName = subjectNames[Math.floor(Math.random() * subjectNames.length)];
-
-    mockSubjects.push({
-      id: `subject-${subjectId}-${Date.now()}-${i}`, // ID duy nhất
-      subjectId,
-      subjectName,
-    });
-  }
-  return mockSubjects;
-};
-
 // --- COMPONENT THẺ MÔN HỌC ---
 const SubjectCard = ({ subjectData }) => {
   return (
@@ -56,21 +25,20 @@ const SubjectContent = ({ searchTerm, searchField }) => {
   const [isAddSubjectModalOpen, setIsAddSubjectModalOpen] = useState(false);
 
   useEffect(() => {
-    const generatedSubjects = generateMockSubjects(25); 
-    setAllSubjects(generatedSubjects);
+    fetch('http://localhost:3001/api/subjects')
+      .then(res => res.json())
+      .then(data => setAllSubjects(data))
+      .catch(() => setAllSubjects([]));
   }, []);
 
   useEffect(() => {
     let subjectsToProcess = [...allSubjects];
     if (searchTerm && searchField && subjectsToProcess.length > 0) {
-        const term = searchTerm.toLowerCase();
-        subjectsToProcess = subjectsToProcess.filter(subject => {
-            const fieldValue = subject[searchField] ? String(subject[searchField]).toLowerCase() : '';
-            if (searchField === 'subjectName' || searchField === 'subject') {
-                 return subject.subjectName.toLowerCase().includes(term) || subject.subjectId.toLowerCase().includes(term);
-            }
-            return fieldValue.includes(term);
-        });
+      const term = searchTerm.toLowerCase();
+      subjectsToProcess = subjectsToProcess.filter(sb => {
+        const fieldValue = sb[searchField] ? String(sb[searchField]).toLowerCase() : '';
+        return fieldValue.includes(term);
+      });
     }
     setFilteredSubjects(subjectsToProcess);
     setCurrentPage(1);

@@ -3,37 +3,8 @@ import './ClassContent.css';
 import PlusIcon from '../asset/image/top-section/plus.svg';
 import AddClassModal from './AddClassModal';
 
-// --- DỮ LIỆU MẪU CHO LỚP HỌC ---
-const generateMockClasses = (count = 20) => {
-  const mockClasses = [];
-  const subjectIdPrefixes = ["IT", "MI", "PH", "EE", "SSH", "EM"];
-  const teacherIdPrefixes = ["GV"];
-
-  const usedClassIds = new Set();
-
-  for (let i = 1; i <= count; i++) {
-    let classId;
-    do {
-      classId = `CL${String(10000 + Math.floor(Math.random() * 9000)).padStart(5, '0')}`;
-    } while (usedClassIds.has(classId));
-    usedClassIds.add(classId);
-
-    const subjectId = subjectIdPrefixes[Math.floor(Math.random() * subjectIdPrefixes.length)] + String(Math.floor(Math.random() * 3000) + 1000).padStart(4, '0');
-    const teacherId = teacherIdPrefixes[Math.floor(Math.random() * teacherIdPrefixes.length)] + String(1000 + Math.floor(Math.random() * 900)).padStart(4, '0');
-
-
-    mockClasses.push({
-      id: `class-${classId}-${Date.now()}-${i}`, // ID duy nhất
-      classId,
-      subjectId,
-      teacherId,
-    });
-  }
-  return mockClasses;
-};
-
 // --- COMPONENT THẺ LỚP HỌC ---
-const ClassCard = ({ classData /*, onEdit */ }) => {
+const ClassCard = ({ classData }) => {
   return (
     <div className="class-card"> 
       <div className="class-card-decorator"></div> 
@@ -41,15 +12,15 @@ const ClassCard = ({ classData /*, onEdit */ }) => {
       <div className="class-card-info">
         <div className="info-group class-id-group">
             <span className="info-label">Class ID</span>
-            <span className="info-value class-id-value">{classData.classId}</span>
+            <span className="info-value class-id-value">{classData.ClassID || classData.classId}</span>
         </div>
         <div className="info-group subject-id-group">
-            <span className="info-label">Subject ID</span>
-            <span className="info-value subject-id-value">{classData.subjectId}</span>
+            <span className="info-label">Subject</span>
+            <span className="info-value subject-id-value">{classData.SubjectName || classData.subjectId}</span>
         </div>
-        <div className="info-group teacher-id-group-class"> {/* Đổi tên class để tránh xung đột */}
-            <span className="info-label">Teacher ID</span>
-            <span className="info-value teacher-id-value-class">{classData.teacherId}</span>
+        <div className="info-group teacher-id-group-class">
+            <span className="info-label">Teacher</span>
+            <span className="info-value teacher-id-value-class">{classData.TeacherName || classData.teacherId}</span>
         </div>
       </div>
     </div>
@@ -62,13 +33,13 @@ const ClassContent = ({ searchTerm, searchField }) => {
   const [filteredClasses, setFilteredClasses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
-  // NOTE: State cho AddClassModal
   const [isAddClassModalOpen, setIsAddClassModalOpen] = useState(false);
 
   useEffect(() => {
-    const generatedClasses = generateMockClasses(20);
-    setAllClasses(generatedClasses);
+    fetch('http://localhost:3001/api/classes')
+      .then(res => res.json())
+      .then(data => setAllClasses(data))
+      .catch(() => setAllClasses([]));
   }, []);
 
   useEffect(() => {

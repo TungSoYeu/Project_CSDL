@@ -4,50 +4,6 @@ import AddStudentModal from './AddStudentModal';
 import PlusIcon from '../asset/image/top-section/plus.svg';
 import DefaultAvatarIcon from '../asset/image/avatar/default-avatar.svg'; 
 
-// --- DỮ LIỆU MẪU CHO SINH VIÊN (TIẾNG ANH) ---
-const generateMockStudents = (count = 25) => {
-  const mockStudents = [];
-  const firstNames = ["Alice", "Bob", "Charlie", "David", "Eve", "Fiona", "George", "Hannah", "Ian", "Julia", "Kevin", "Linda", "Michael", "Nora", "Oscar"];
-  const lastNames = ["Smith", "Jones", "Williams", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin"];
-  const majors = [
-    "Information Technology", "Computer Science", "Software Engineering", "Information Systems",
-    "Cybersecurity", "Multimedia Communication", "Business Administration",
-    "Marketing", "Finance and Banking", "English Language", "Data Science", "Artificial Intelligence",
-    "Mechanical Engineering", "Electrical Engineering", "Civil Engineering"
-  ];
-
-  const usedStudentIds = new Set();
-
-  for (let i = 1; i <= count; i++) {
-    let studentId;
-    do {
-      studentId = String(20230000 + Math.floor(Math.random() * 5000)).padStart(8, '0');
-    } while (usedStudentIds.has(studentId));
-    usedStudentIds.add(studentId);
-
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-    const fullName = `${firstName} ${lastName}`; 
-
-    const year = 2002 + Math.floor(Math.random() * 5); 
-    const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
-    const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0'); 
-    const dob = `${day}/${month}/${year}`; 
-
-    const major = majors[Math.floor(Math.random() * majors.length)];
-
-    mockStudents.push({
-      id: `student-${studentId}-${Date.now()}-${i}`, 
-      avatar: DefaultAvatarIcon,
-      studentId,
-      fullName,
-      dob,
-      major,
-    });
-  }
-  return mockStudents;
-};
-
 // --- COMPONENT THẺ SINH VIÊN ---
 const StudentCard = ({ studentData, onEdit }) => {
   return (
@@ -89,18 +45,20 @@ const StudentContent = ({ searchTerm, searchField }) => {
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
 
   useEffect(() => {
-    const generatedStudents = generateMockStudents(25);
-    setAllStudents(generatedStudents);
+    fetch('http://localhost:3001/api/students')
+      .then(res => res.json())
+      .then(data => setAllStudents(data))
+      .catch(() => setAllStudents([]));
   }, []);
 
   useEffect(() => {
     let studentsToProcess = [...allStudents];
     if (searchTerm && searchField && studentsToProcess.length > 0) {
-        const term = searchTerm.toLowerCase();
-        studentsToProcess = studentsToProcess.filter(student => {
-            const fieldValue = student[searchField] ? String(student[searchField]).toLowerCase() : '';
-            return fieldValue.includes(term);
-        });
+      const term = searchTerm.toLowerCase();
+      studentsToProcess = studentsToProcess.filter(stu => {
+        const fieldValue = stu[searchField] ? String(stu[searchField]).toLowerCase() : '';
+        return fieldValue.includes(term);
+      });
     }
     setFilteredStudents(studentsToProcess);
     setCurrentPage(1);

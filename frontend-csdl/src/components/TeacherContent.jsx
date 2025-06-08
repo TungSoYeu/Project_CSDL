@@ -4,51 +4,26 @@ import PlusIcon from '../asset/image/top-section/plus.svg';
 import DefaultAvatarIcon from '../asset/image/avatar/default-avatar.svg'; 
 import AddTeacherModal from './AddTeacherModal.jsx';
 
-// --- DỮ LIỆU MẪU CHO GIÁO VIÊN ---
-const generateMockTeachers = (count = 20) => {
-  const mockTeachers = [];
-  const firstNames = ["John", "Jane", "Robert", "Emily", "Michael", "Sarah", "William", "Jessica", "David", "Linda"];
-  const lastNames = ["Doe", "Smith", "Johnson", "Williams", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor"];
-  
-  const usedTeacherIds = new Set();
-
-  for (let i = 1; i <= count; i++) {
-    let teacherId;
-    do {
-      teacherId = `GV${String(1000 + Math.floor(Math.random() * 900)).padStart(4, '0')}`;
-    } while (usedTeacherIds.has(teacherId));
-    usedTeacherIds.add(teacherId);
-
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-    const fullName = `${firstName} ${lastName}`;
-
-    mockTeachers.push({
-      id: `teacher-${teacherId}-${Date.now()}-${i}`,
-      avatar: DefaultAvatarIcon,
-      teacherId,
-      fullName,
-    });
-  }
-  return mockTeachers;
-};
-
 // --- COMPONENT THẺ GIÁO VIÊN ---
 const TeacherCard = ({ teacherData }) => { 
   return (
     <div className="teacher-card"> 
       <div className="teacher-card-decorator"></div>
       <div className="teacher-card-avatar-section">
-        <img src={teacherData.avatar} alt={`${teacherData.fullName}'s Avatar`} className="teacher-avatar" />
+        <img src={teacherData.avatar || DefaultAvatarIcon} alt={`${teacherData.FullName || teacherData.fullName}'s Avatar`} className="teacher-avatar" />
       </div>
       <div className="teacher-card-info">
-        <div className="info-group teacher-name-group">
-            <span className="info-label">Full Name</span>
-            <span className="info-value teacher-name-value">{teacherData.fullName}</span>
-        </div>
         <div className="info-group teacher-id-group">
             <span className="info-label">Teacher ID</span>
-            <span className="info-value teacher-id-value">{teacherData.teacherId}</span>
+            <span className="info-value teacher-id-value">{teacherData.TeacherID || teacherData.teacherId}</span>
+        </div>
+        <div className="info-group teacher-name-group">
+            <span className="info-label">Full Name</span>
+            <span className="info-value teacher-name-value">{teacherData.FullName || teacherData.fullName}</span>
+        </div>
+        <div className="info-group teacher-avatar-group">
+            <span className="info-label">Avatar</span>
+            <span className="info-value teacher-avatar-value">{teacherData.avatar ? 'Có' : 'Mặc định'}</span>
         </div>
       </div>
     </div>
@@ -66,18 +41,20 @@ const TeacherContent = ({ searchTerm, searchField }) => {
   const [isAddTeacherModalOpen, setIsAddTeacherModalOpen] = useState(false);
 
   useEffect(() => {
-    const generatedTeachers = generateMockTeachers(20);
-    setAllTeachers(generatedTeachers);
+    fetch('http://localhost:3001/api/teachers')
+      .then(res => res.json())
+      .then(data => setAllTeachers(data))
+      .catch(() => setAllTeachers([]));
   }, []);
 
   useEffect(() => {
     let teachersToProcess = [...allTeachers];
     if (searchTerm && searchField && teachersToProcess.length > 0) {
-        const term = searchTerm.toLowerCase();
-        teachersToProcess = teachersToProcess.filter(teacher => {
-            const fieldValue = teacher[searchField] ? String(teacher[searchField]).toLowerCase() : '';
-            return fieldValue.includes(term);
-        });
+      const term = searchTerm.toLowerCase();
+      teachersToProcess = teachersToProcess.filter(tc => {
+        const fieldValue = tc[searchField] ? String(tc[searchField]).toLowerCase() : '';
+        return fieldValue.includes(term);
+      });
     }
     setFilteredTeachers(teachersToProcess);
     setCurrentPage(1);

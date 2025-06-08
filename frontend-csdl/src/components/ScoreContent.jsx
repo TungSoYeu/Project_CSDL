@@ -5,29 +5,6 @@ import PlusIcon from '../asset/image/top-section/plus.svg';
 import AddScoreModal from './AddScoreModal'; 
 import EditScoreModal from './EditScoreModal';
 
-// --- DỮ LIỆU MẪU ---
-const generateMockScores = (count = 25) => {
-  const mockScores = [];
-  const subjects = ['IT3290', 'MI1134', 'IT4110', 'IT3292', 'IT3280', 'IT3282', 'SSH1121', 'IT3103'];
-  const classPrefixes = ['152', '153', '154'];
-
-  for (let i = 1; i <= count; i++) {
-    const studentId = String(1000 + i).padStart(4, '0');
-    const subjectId = subjects[Math.floor(Math.random() * subjects.length)];
-    const classId = classPrefixes[Math.floor(Math.random() * classPrefixes.length)] + String(Math.floor(Math.random() * 900) + 100).padStart(3,'0');
-    const score = parseFloat((Math.random() * 6 + 4).toFixed(2)); 
-
-    mockScores.push({
-      id: `score-${i}`,
-      studentId,
-      subjectId,
-      classId,
-      score,
-    });
-  }
-  return mockScores;
-};
-
 // --- COMPONENT THẺ ĐIỂM ---
 const ScoreCard = ({ scoreData, onEdit }) => {
   const handleEditScore = () => {
@@ -69,11 +46,11 @@ const ScoreCard = ({ scoreData, onEdit }) => {
 
 
 // --- COMPONENT CHÍNH ---
-const ScoreContent = ({searchTerm, searchField}) => {
+const ScoreContent = ({ searchTerm, searchField }) => {
   const [allScores, setAllScores] = useState([]);
   const [filteredScores, setFilteredScores] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const scoresPerPage = 10;
+  const itemsPerPage = 10;
 
   const [scoreFrom, setScoreFrom] = useState('');
   const [scoreTo, setScoreTo] = useState('');
@@ -86,10 +63,24 @@ const ScoreContent = ({searchTerm, searchField}) => {
 
 
   useEffect(() => {
-    const generatedScores = generateMockScores(25);
-    setAllScores(generatedScores);
-    console.log('[ScoreContent] Mock scores generated:', generatedScores);
+    fetch('http://localhost:3001/api/scores')
+      .then(res => res.json())
+      .then(data => setAllScores(data))
+      .catch(() => setAllScores([]));
   }, []);
+
+  useEffect(() => {
+    let scoresToProcess = [...allScores];
+    if (searchTerm && searchField && scoresToProcess.length > 0) {
+      const term = searchTerm.toLowerCase();
+      scoresToProcess = scoresToProcess.filter(sc => {
+        const fieldValue = sc[searchField] ? String(sc[searchField]).toLowerCase() : '';
+        return fieldValue.includes(term);
+      });
+    }
+    setFilteredScores(scoresToProcess);
+    setCurrentPage(1);
+  }, [allScores, searchTerm, searchField]);
 
   useEffect(() => {
     console.log('[ScoreContent] Filtering useEffect triggered. Dependencies:', {
@@ -149,10 +140,10 @@ const ScoreContent = ({searchTerm, searchField}) => {
   }, [allScores, scoreFrom, scoreTo, currentSort, searchTerm, searchField]);
 
 
-  const indexOfLastScore = currentPage * scoresPerPage;
-  const indexOfFirstScore = indexOfLastScore - scoresPerPage;
+  const indexOfLastScore = currentPage * itemsPerPage;
+  const indexOfFirstScore = indexOfLastScore - itemsPerPage;
   const currentScoresToDisplay = filteredScores.slice(indexOfFirstScore, indexOfLastScore);
-  const totalPages = Math.ceil(filteredScores.length / scoresPerPage);
+  const totalPages = Math.ceil(filteredScores.length / itemsPerPage);
 
   const paginate = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -338,4 +329,4 @@ const ScoreContent = ({searchTerm, searchField}) => {
   );
 };
 
-export default ScoreContent; 
+export default ScoreContent;
