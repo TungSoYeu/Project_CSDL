@@ -1,20 +1,104 @@
+/* Wrapper chung cho các phần tử trong header */
+.header-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    height: 56px;
+    padding: 0 24px;
+    background: transparent;
+    z-index: 10;
+}
+
+/* Dropdown chọn Student ID */
+.header-actions .studentid-dropdown,
+.header-actions .studentid-dropdown select {
+    height: 36px;
+    min-width: 140px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    padding: 0 10px;
+    background: #fff;
+    margin: 0 8px;
+    display: flex;
+    align-items: center;
+}
+
+/* Avatar user */
+.header-actions .user-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    margin-left: 8px;
+}
+
+.header-actions .user-box:hover {
+    background: #f5f6fa;
+}
+
+.header-actions .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Nút notification bell */
+.header-actions .notification-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0 0 0 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 36px;
+    width: 36px;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transition: background-color 0.2s;
+}
+
+.header-actions .notification-btn:hover {
+    background-color: #f0f2f5;
+}
+
+.header-actions .header-icon {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(70%) opacity(0.8);
+}
+
+/* Sidebar navigation styles */
 .sidebar-nav {
     flex-grow: 1;
     margin-top: 5px;
-  }
-  
-  .sidebar-nav ul {
+}
+
+.sidebar-nav ul {
     display: flex;
     flex-direction: column;
     gap: 5px;
-  }
+}
 
 .sidebar-nav li a {
     display: flex;
     align-items: center;
     padding: 10px var(--base-padding);
     border-radius: var(--border-radius-medium);
-    color: var(--secondary-color); 
+    color: var(--secondary-color);
     font-weight: 500;
     font-size: var(--font-size-nav);
     transition: background-color 0.2s ease, color 0.2s ease;
@@ -33,46 +117,122 @@
 }
 
 .sidebar-nav li.active a {
-    background-color: var(--primary-color-light); 
-    color: var(--primary-color); 
+    background-color: var(--primary-color-light);
+    color: var(--primary-color);
     font-weight: 700;
 }
 
 .sidebar-nav li.active a::after {
     content: '';
     position: absolute;
-    right: 0; 
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
-    height: 60%; 
-    width: var(--active-bar-width); 
-    background-color: var(--primary-color); 
-    border-radius: 2px 0 0 2px; 
+    height: 60%;
+    width: var(--active-bar-width);
+    background-color: var(--primary-color);
+    border-radius: 2px 0 0 2px;
 }
 
 .sidebar-nav li.active a .nav-icon {
-     filter: none; 
+    filter: none;
 }
-
 
 .sidebar-nav li:not(.active) a:hover {
     background-color: var(--primary-color-light);
     color: var(--primary-color);
 }
 .sidebar-nav li:not(.active) a:hover .nav-icon {
-    filter: none; 
+    filter: none;
 }
 
 .logout-link {
     color: var(--secondary-color);
 }
 .logout-link .nav-icon {
-     filter: grayscale(80%) opacity(0.7);
+    filter: grayscale(80%) opacity(0.7);
 }
 .logout-link:hover {
-     background-color: var(--logout-hover-bg);
-     color: var(--logout-hover-text);
+    background-color: var(--logout-hover-bg);
+    color: var(--logout-hover-text);
 }
 .logout-link:hover .nav-icon {
-     filter: none;
+    filter: none;
+}
+
+/* Thay logo bằng user box: căn chỉnh user-box ở đầu sidebar-header */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 64px;
+    padding: 0 16px;
+    background: transparent;
+}
+
+.sidebar-header .user-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    transition: background 0.2s;
+}
+
+.sidebar-header .user-box:hover {
+    background: #f5f6fa;
+}
+
+.sidebar-header .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+/* Đưa user box lên góc trên cùng bên phải, không hiện popup, chỉ là nút avatar */
+/* Avatar cố định góc trên phải, không có popup */
+.user-box-fixed-top {
+    position: fixed;
+    top: 18px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1.5px solid #e0e0e0;
+    background: #fff;
+    z-index: 3000;
+    transition: background 0.2s;
+    box-shadow: 0 0 0 2px #fff inset;
+}
+
+.user-box-fixed-top:hover {
+    background: #f5f6fa;
+}
+
+.user-box-fixed-top img,
+.user-box-fixed-top .avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50% !important;
+    object-fit: cover;
+    aspect-ratio: 1 / 1;
+    display: block;
+    object-position: center;
+    background: #fff;
+    border: none;
+    padding: 0;
+    /* Đảm bảo hình tròn tuyệt đối, không bị kéo dọc */
+    clip-path: circle(50% at 50% 50%);
+    overflow: hidden;
 }

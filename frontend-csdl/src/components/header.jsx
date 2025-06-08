@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import StudentIdDropdown from './StudentIdDropdown.jsx'; 
 import searchIcon from '../asset/image/header/search-icon.svg';
@@ -6,7 +7,7 @@ import notiIcon from '../asset/image/header/noti-icon.svg';
 import profilePicture from '../asset/image/header/profile-picture.svg';
 import dropdownIcon from '../asset/image/header/dropdown-icon.svg'; // Icon dùng chung
 
-function Header({ searchTerm, searchField, onSearchChange, onSearchFieldChange, activePage }) { // Đổi tên thành Header nếu muốn (PascalCase)
+function Header({ searchTerm, searchField, onSearchChange, onSearchFieldChange, activePage }) {
   // Định nghĩa các options cho từng trang
   const scoreSearchOptions = [
     { value: 'studentId', label: 'Student ID' },
@@ -53,8 +54,26 @@ function Header({ searchTerm, searchField, onSearchChange, onSearchFieldChange, 
     currentSearchOptions = [{ value: '', label: 'Select Field' }]; 
   }
 
+  // Thêm state cho popup thông tin user
+  const [showUserInfo, setShowUserInfo] = useState(false);
+  const navigate = useNavigate();
+
+  const handleUserBoxClick = () => {
+    setShowUserInfo((prev) => !prev);
+  };
+
+  // Hàm toggle popup
+  const handleAvatarClick = () => {
+    navigate('/user-info');
+  };
+
+  // Khi click vào profile picture, chuyển sang trang thông tin user
+  const handleProfileClick = () => {
+    navigate('/user-info');
+  };
+
   return (
-    <header className="main-header">
+    <header className="header">
       <div className="header-item search-box">
         <form onSubmit={e => e.preventDefault()}>
           <img src={searchIcon} alt="Search" className="header-icon search-icon" />
@@ -81,18 +100,15 @@ function Header({ searchTerm, searchField, onSearchChange, onSearchFieldChange, 
             <img src={notiIcon} alt="Notifications" className="header-icon" />
           </button>
         </div>
-
-        <div className="header-item action-box user-box">
-          <button aria-label="User Menu">
-            <img src={profilePicture} alt="User Avatar" className="avatar" />
-            <span className="user-name">Evan Yates</span>
-            <img src={dropdownIcon} alt="Dropdown" className="header-icon dropdown-icon" />
-          </button>
-          {/* Dropdown menu cho user sẽ nằm ở đây */}
+        <div
+          className="user-box"
+          onClick={() => navigate('/user-info')}
+        >
+          <img src={profilePicture} alt="User Avatar" className="avatar" />
         </div>
       </div>
     </header>
   );
 }
 
-export default Header; 
+export default Header;

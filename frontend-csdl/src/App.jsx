@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './style.css';
 import Sidebar from './components/sidebar';
@@ -8,11 +9,20 @@ import StudentContent from './components/StudentContent';
 import TeacherContent from './components/TeacherContent';
 import ClassContent from './components/ClassContent';
 import SubjectContent from './components/SubjectContent';
+import LoginPage from './pages/LoginPage';
+import Logout from './pages/Logout';
+import UserInfo from './pages/UserInfo';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchField, setSearchField] = useState(''); 
-  const [activePage, setActivePage] = useState('score'); 
+  const [searchField, setSearchField] = useState('');
+  const [activePage, setActivePage] = useState('score');
+
+  // Kiểm tra token, nếu chưa đăng nhập thì chỉ hiển thị LoginPage
+  const isLoggedIn = !!localStorage.getItem('token');
+  if (!isLoggedIn) {
+    return <LoginPage />;
+  }
 
   // NOTE: Hàm để Header cập nhật searchTerm
   const handleSearchTermChange = (newTerm) => {
@@ -26,7 +36,6 @@ function App() {
   
     // NOTE: Hàm để Sidebar gọi khi một mục được chọn
   const handleNavigation = (page) => {
-    console.log('Navigating to:', page); // Debug
     setActivePage(page);
     setSearchTerm('');
 
@@ -65,22 +74,29 @@ function App() {
   };
 
   return (
-    <div className="dashboard-layout">
-      <Sidebar activePage={activePage} onNavigate={handleNavigation}/>
+    <Router>
+      <div className="dashboard-layout">
+        <Sidebar activePage={activePage} onNavigate={handleNavigation}/>
 
-      <div className="main-content-wrapper">
-        <Header
-          searchTerm={searchTerm}
-          searchField={searchField} 
-          onSearchChange={handleSearchTermChange}
-          onSearchFieldChange={handleSearchFieldChange} 
-          activePage={activePage} 
-        />
-        <main className="content-wrapper">
-          {renderMainContent()}
-        </main>
+        <div className="main-content-wrapper">
+          <Header
+            searchTerm={searchTerm}
+            searchField={searchField} 
+            onSearchChange={handleSearchTermChange}
+            onSearchFieldChange={handleSearchFieldChange} 
+            activePage={activePage} 
+          />
+          <main className="content-wrapper">
+            <Routes>
+              <Route path="/user-info" element={<UserInfo />} />
+              <Route path="/logout" element={<Logout />} />
+              {/* Các route khác nếu có */}
+            </Routes>
+            {renderMainContent()}
+          </main>
+        </div>
       </div>
-    </div>
+    </Router>
   );
 }
 

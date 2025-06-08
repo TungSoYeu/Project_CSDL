@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import logoSvg from '../asset/image/sidebar/logo.svg';
 import scoreIcon from '../asset/image/sidebar/score-icon.svg';
@@ -10,7 +11,10 @@ import illustratorSvg from '../asset/image/sidebar/sidebar-illustrator.svg';
 import logoutIcon from '../asset/image/sidebar/logout.svg';
 import './sidebar.css'; 
 
-function Sidebar({ activePage, onNavigate }) { 
+function Sidebar({ activePage, onNavigate }) {
+  const navigate = useNavigate();
+  const [loggingOut, setLoggingOut] = useState(false);
+
   const navItems = [
     { key: 'score', label: 'Score', iconSrc: scoreIcon },
     { key: 'student', label: 'Student', iconSrc: studentIcon },
@@ -20,8 +24,21 @@ function Sidebar({ activePage, onNavigate }) {
   ];
 
   const handleItemClick = (itemKey) => {
-    console.log('Sidebar item clicked:', itemKey); 
+    console.log('Sidebar item clicked:', itemKey);
     onNavigate(itemKey);
+  };
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      localStorage.removeItem('token');
+      sessionStorage.clear();
+      window.location.reload(); // Reload để App kiểm tra lại token và hiển thị LoginPage
+    } catch (err) {
+      setLoggingOut(false);
+    }
   };
 
   return (
@@ -57,13 +74,18 @@ function Sidebar({ activePage, onNavigate }) {
         <div className="illustration-container">
           <img src={illustratorSvg} alt="Illustration" />
         </div>
-        <a href="#" className="logout-link">
+        <a
+          href="/login-page"
+          className="logout-link"
+          onClick={handleLogout}
+          style={loggingOut ? { pointerEvents: 'none', opacity: 0.6 } : {}}
+        >
           <img src={logoutIcon} alt="" className="nav-icon" />
-          <span>Logout</span>
+          <span>{loggingOut ? 'Logging out...' : 'Logout'}</span>
         </a>
       </div>
     </aside>
   );
 }
 
-export default Sidebar; 
+export default Sidebar;
