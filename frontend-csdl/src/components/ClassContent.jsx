@@ -8,19 +8,18 @@ const ClassCard = ({ classData }) => {
   return (
     <div className="class-card"> 
       <div className="class-card-decorator"></div> 
-      {/* Không có avatar cho Class */}
       <div className="class-card-info">
         <div className="info-group class-id-group">
             <span className="info-label">Class ID</span>
-            <span className="info-value class-id-value">{classData.ClassID || classData.classId}</span>
+            <span className="info-value class-id-value">{classData.ClassID}</span>
         </div>
         <div className="info-group subject-id-group">
             <span className="info-label">Subject</span>
-            <span className="info-value subject-id-value">{classData.SubjectName || classData.subjectId}</span>
+            <span className="info-value subject-id-value">{classData.SubjectName} ({classData.SubjectID})</span>
         </div>
         <div className="info-group teacher-id-group-class">
             <span className="info-label">Teacher</span>
-            <span className="info-value teacher-id-value-class">{classData.TeacherName || classData.teacherId}</span>
+            <span className="info-value teacher-id-value-class">{classData.TeacherName} ({classData.TeacherID})</span>
         </div>
       </div>
     </div>
@@ -45,11 +44,35 @@ const ClassContent = ({ searchTerm, searchField }) => {
   useEffect(() => {
     let classesToProcess = [...allClasses];
     if (searchTerm && searchField && classesToProcess.length > 0) {
-        const term = searchTerm.toLowerCase();
-        classesToProcess = classesToProcess.filter(cls => { 
-            const fieldValue = cls[searchField] ? String(cls[searchField]).toLowerCase() : '';
-            return fieldValue.includes(term);
-        });
+      const term = String(searchTerm).toLowerCase();
+      classesToProcess = classesToProcess.filter(cls => {
+        let fieldValue = '';
+        if (
+          searchField === 'Class ID' || searchField.toLowerCase() === 'classid' || searchField.toLowerCase() === 'class id'
+        ) {
+          fieldValue = cls.ClassID ? String(cls.ClassID).toLowerCase() : '';
+        } else if (
+          searchField === 'Subject ID' || searchField.toLowerCase() === 'subjectid' || searchField.toLowerCase() === 'subject id'
+        ) {
+          fieldValue = cls.SubjectID ? String(cls.SubjectID).toLowerCase() : '';
+        } else if (
+          searchField === 'Teacher ID' || searchField.toLowerCase() === 'teacherid' || searchField.toLowerCase() === 'teacher id'
+        ) {
+          fieldValue = cls.TeacherID ? String(cls.TeacherID).toLowerCase() : '';
+        } else {
+          fieldValue = cls[searchField] ? String(cls[searchField]).toLowerCase() : '';
+        }
+        // So sánh exact match cho 3 mục, còn lại thì includes
+        if (
+          searchField === 'Class ID' || searchField.toLowerCase() === 'classid' || searchField.toLowerCase() === 'class id' ||
+          searchField === 'Subject ID' || searchField.toLowerCase() === 'subjectid' || searchField.toLowerCase() === 'subject id' ||
+          searchField === 'Teacher ID' || searchField.toLowerCase() === 'teacherid' || searchField.toLowerCase() === 'teacher id'
+        ) {
+          return fieldValue === term;
+        } else {
+          return fieldValue.includes(term);
+        }
+      });
     }
     setFilteredClasses(classesToProcess);
     setCurrentPage(1);

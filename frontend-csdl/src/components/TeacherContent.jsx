@@ -10,20 +10,16 @@ const TeacherCard = ({ teacherData }) => {
     <div className="teacher-card"> 
       <div className="teacher-card-decorator"></div>
       <div className="teacher-card-avatar-section">
-        <img src={teacherData.avatar || DefaultAvatarIcon} alt={`${teacherData.FullName || teacherData.fullName}'s Avatar`} className="teacher-avatar" />
+        <img src={teacherData.avatar || DefaultAvatarIcon} alt={`${teacherData.FullName}'s Avatar`} className="teacher-avatar" />
       </div>
       <div className="teacher-card-info">
         <div className="info-group teacher-id-group">
             <span className="info-label">Teacher ID</span>
-            <span className="info-value teacher-id-value">{teacherData.TeacherID || teacherData.teacherId}</span>
+            <span className="info-value teacher-id-value">{teacherData.TeacherID}</span>
         </div>
         <div className="info-group teacher-name-group">
             <span className="info-label">Full Name</span>
-            <span className="info-value teacher-name-value">{teacherData.FullName || teacherData.fullName}</span>
-        </div>
-        <div className="info-group teacher-avatar-group">
-            <span className="info-label">Avatar</span>
-            <span className="info-value teacher-avatar-value">{teacherData.avatar ? 'Có' : 'Mặc định'}</span>
+            <span className="info-value teacher-name-value">{teacherData.FullName}</span>
         </div>
       </div>
     </div>
@@ -50,10 +46,29 @@ const TeacherContent = ({ searchTerm, searchField }) => {
   useEffect(() => {
     let teachersToProcess = [...allTeachers];
     if (searchTerm && searchField && teachersToProcess.length > 0) {
-      const term = searchTerm.toLowerCase();
+      const term = String(searchTerm).toLowerCase();
       teachersToProcess = teachersToProcess.filter(tc => {
-        const fieldValue = tc[searchField] ? String(tc[searchField]).toLowerCase() : '';
-        return fieldValue.includes(term);
+        let fieldValue = '';
+        if (
+          searchField === 'Teacher ID' || searchField.toLowerCase() === 'teacherid' || searchField.toLowerCase() === 'teacher id'
+        ) {
+          fieldValue = tc.TeacherID ? String(tc.TeacherID).toLowerCase() : '';
+        } else if (
+          searchField === 'Full Name' || searchField.toLowerCase() === 'fullname' || searchField.toLowerCase() === 'full name'
+        ) {
+          fieldValue = tc.FullName ? String(tc.FullName).toLowerCase() : '';
+        } else {
+          fieldValue = tc[searchField] ? String(tc[searchField]).toLowerCase() : '';
+        }
+        // So sánh exact match cho 2 mục, còn lại thì includes
+        if (
+          searchField === 'Teacher ID' || searchField.toLowerCase() === 'teacherid' || searchField.toLowerCase() === 'teacher id' ||
+          searchField === 'Full Name' || searchField.toLowerCase() === 'fullname' || searchField.toLowerCase() === 'full name'
+        ) {
+          return fieldValue === term;
+        } else {
+          return fieldValue.includes(term);
+        }
       });
     }
     setFilteredTeachers(teachersToProcess);

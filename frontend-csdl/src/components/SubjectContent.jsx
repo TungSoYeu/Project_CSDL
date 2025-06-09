@@ -8,8 +8,14 @@ const SubjectCard = ({ subjectData }) => {
   return (
     <div className="subject-card">
       <div className="subject-card-info">
-        <span className="subject-name-main">{subjectData.subjectName}</span>
-        <span className="subject-id-sub">Subject ID: {subjectData.subjectId}</span>
+        <div className="info-group subject-id-group">
+          <span className="info-label">Subject ID</span>
+          <span className="info-value subject-id-value">{subjectData.SubjectID}</span>
+        </div>
+        <div className="info-group subject-name-group">
+          <span className="info-label">Subject Name</span>
+          <span className="info-value subject-name-value">{subjectData.SubjectName}</span>
+        </div>
       </div>
     </div>
   );
@@ -34,10 +40,29 @@ const SubjectContent = ({ searchTerm, searchField }) => {
   useEffect(() => {
     let subjectsToProcess = [...allSubjects];
     if (searchTerm && searchField && subjectsToProcess.length > 0) {
-      const term = searchTerm.toLowerCase();
-      subjectsToProcess = subjectsToProcess.filter(sb => {
-        const fieldValue = sb[searchField] ? String(sb[searchField]).toLowerCase() : '';
-        return fieldValue.includes(term);
+      const term = String(searchTerm).toLowerCase();
+      subjectsToProcess = subjectsToProcess.filter(sub => {
+        let fieldValue = '';
+        if (
+          searchField === 'Subject ID' || searchField.toLowerCase() === 'subjectid' || searchField.toLowerCase() === 'subject id'
+        ) {
+          fieldValue = sub.SubjectID ? String(sub.SubjectID).toLowerCase() : '';
+        } else if (
+          searchField === 'Subject Name' || searchField.toLowerCase() === 'subjectname' || searchField.toLowerCase() === 'subject name'
+        ) {
+          fieldValue = sub.SubjectName ? String(sub.SubjectName).toLowerCase() : '';
+        } else {
+          fieldValue = sub[searchField] ? String(sub[searchField]).toLowerCase() : '';
+        }
+        // So sánh exact match cho 2 mục, còn lại thì includes
+        if (
+          searchField === 'Subject ID' || searchField.toLowerCase() === 'subjectid' || searchField.toLowerCase() === 'subject id' ||
+          searchField === 'Subject Name' || searchField.toLowerCase() === 'subjectname' || searchField.toLowerCase() === 'subject name'
+        ) {
+          return fieldValue === term;
+        } else {
+          return fieldValue.includes(term);
+        }
       });
     }
     setFilteredSubjects(subjectsToProcess);

@@ -5,29 +5,25 @@ import PlusIcon from '../asset/image/top-section/plus.svg';
 import DefaultAvatarIcon from '../asset/image/avatar/default-avatar.svg'; 
 
 // --- COMPONENT THẺ SINH VIÊN ---
-const StudentCard = ({ studentData, onEdit }) => {
+const StudentCard = ({ studentData }) => {
   return (
     <div className="student-card">
-      <div className="student-card-decorator"></div>
-      <div className="student-card-avatar-section">
-        <img src={studentData.avatar} alt={`${studentData.fullName}'s Avatar`} className="student-avatar" />
-      </div>
       <div className="student-card-info">
-        <div className="info-group student-name-group">
-            <span className="info-label">Full Name</span>
-            <span className="info-value student-name-value">{studentData.fullName}</span>
-        </div>
         <div className="info-group student-id-group">
-            <span className="info-label">Student ID</span>
-            <span className="info-value student-id-value">{studentData.studentId}</span>
+          <span className="info-label">Student ID</span>
+          <span className="info-value student-id-value">{studentData.StudentID}</span>
         </div>
-        <div className="info-group student-dob-group">
-            <span className="info-label">DOB</span>
-            <span className="info-value student-dob-value">{studentData.dob}</span>
+        <div className="info-group student-name-group">
+          <span className="info-label">Full Name</span>
+          <span className="info-value student-name-value">{studentData.FullName}</span>
+        </div>
+        <div className="info-group student-birthdate-group">
+          <span className="info-label">Birth Date</span>
+          <span className="info-value student-birthdate-value">{studentData.BirthDate}</span>
         </div>
         <div className="info-group student-major-group">
-            <span className="info-label">Major</span>
-            <span className="info-value student-major-value">{studentData.major}</span>
+          <span className="info-label">Major</span>
+          <span className="info-value student-major-value">{studentData.Major}</span>
         </div>
       </div>
     </div>
@@ -54,10 +50,39 @@ const StudentContent = ({ searchTerm, searchField }) => {
   useEffect(() => {
     let studentsToProcess = [...allStudents];
     if (searchTerm && searchField && studentsToProcess.length > 0) {
-      const term = searchTerm.toLowerCase();
+      const term = String(searchTerm).toLowerCase();
       studentsToProcess = studentsToProcess.filter(stu => {
-        const fieldValue = stu[searchField] ? String(stu[searchField]).toLowerCase() : '';
-        return fieldValue.includes(term);
+        let fieldValue = '';
+        if (
+          searchField === 'Student ID' || searchField.toLowerCase() === 'studentid' || searchField.toLowerCase() === 'student id'
+        ) {
+          fieldValue = stu.StudentID ? String(stu.StudentID).toLowerCase() : '';
+        } else if (
+          searchField === 'Full Name' || searchField.toLowerCase() === 'fullname' || searchField.toLowerCase() === 'full name'
+        ) {
+          fieldValue = stu.FullName ? String(stu.FullName).toLowerCase() : '';
+        } else if (
+          searchField === 'DOB' || searchField.toLowerCase() === 'dob' || searchField.toLowerCase() === 'birth date' || searchField.toLowerCase() === 'birthdate'
+        ) {
+          fieldValue = stu.BirthDate ? String(stu.BirthDate).toLowerCase() : '';
+        } else if (
+          searchField === 'Major' || searchField.toLowerCase() === 'major'
+        ) {
+          fieldValue = stu.Major ? String(stu.Major).toLowerCase() : '';
+        } else {
+          fieldValue = stu[searchField] ? String(stu[searchField]).toLowerCase() : '';
+        }
+        // So sánh exact match cho 4 mục, còn lại thì includes
+        if (
+          searchField === 'Student ID' || searchField.toLowerCase() === 'studentid' || searchField.toLowerCase() === 'student id' ||
+          searchField === 'Full Name' || searchField.toLowerCase() === 'fullname' || searchField.toLowerCase() === 'full name' ||
+          searchField === 'DOB' || searchField.toLowerCase() === 'dob' || searchField.toLowerCase() === 'birth date' || searchField.toLowerCase() === 'birthdate' ||
+          searchField === 'Major' || searchField.toLowerCase() === 'major'
+        ) {
+          return fieldValue === term;
+        } else {
+          return fieldValue.includes(term);
+        }
       });
     }
     setFilteredStudents(studentsToProcess);

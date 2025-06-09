@@ -6,39 +6,34 @@ import AddScoreModal from './AddScoreModal';
 import EditScoreModal from './EditScoreModal';
 
 // --- COMPONENT THẺ ĐIỂM ---
-const ScoreCard = ({ scoreData, onEdit }) => {
-  const handleEditScore = () => {
-    console.log('Edit score for Student ID:', scoreData.studentId, 'Subject ID:', scoreData.subjectId);
-  };
-
+const ScoreCard = ({ scoreData }) => {
   return (
     <div className="score-card">
-      <div className="score-card-decorator"></div>
       <div className="score-card-info">
-        <div className="info-group">
+        <div className="info-group score-student-id-group">
           <span className="info-label">Student ID</span>
-          <span className="info-value">{scoreData.studentId}</span>
+          <span className="info-value score-student-id-value">{scoreData.StudentID}</span>
         </div>
-        <div className="info-group">
-          <span className="info-label">Subject ID</span>
-          <span className="info-value">{scoreData.subjectId}</span>
+        <div className="info-group score-student-name-group">
+          <span className="info-label">Full Name</span>
+          <span className="info-value score-student-name-value">{scoreData.FullName}</span>
         </div>
-        <div className="info-group">
+        <div className="info-group score-class-id-group">
           <span className="info-label">Class ID</span>
-          <span className="info-value">{scoreData.classId}</span>
+          <span className="info-value score-class-id-value">{scoreData.ClassID}</span>
         </div>
-      </div>
-      <div className="score-card-actions">
-        <span className="score-value-main">{scoreData.score.toFixed(2)}</span>
-        <button 
-          className="edit-score-button" 
-          onClick={() => {
-            console.log('[ScoreCard] Edit button clicked, calling onEdit with:', scoreData); // DEBUG
-            onEdit(scoreData);
-          }}>
-          <span className="edit-score-icon-placeholder">+</span>
-          Edit Score
-        </button>
+        <div className="info-group score-subject-id-group">
+          <span className="info-label">Subject ID</span>
+          <span className="info-value score-subject-id-value">{scoreData.SubjectID}</span>
+        </div>
+        <div className="info-group score-subject-name-group">
+          <span className="info-label">Subject Name</span>
+          <span className="info-value score-subject-name-value">{scoreData.SubjectName}</span>
+        </div>
+        <div className="info-group score-score-group">
+          <span className="info-label">Score</span>
+          <span className="info-value score-score-value">{scoreData.Score}</span>
+        </div>
       </div>
     </div>
   );
@@ -51,7 +46,6 @@ const ScoreContent = ({ searchTerm, searchField }) => {
   const [filteredScores, setFilteredScores] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
   const [scoreFrom, setScoreFrom] = useState('');
   const [scoreTo, setScoreTo] = useState('');
   const [currentSort, setCurrentSort] = useState('original');
@@ -71,74 +65,87 @@ const ScoreContent = ({ searchTerm, searchField }) => {
 
   useEffect(() => {
     let scoresToProcess = [...allScores];
+    // Lọc theo tìm kiếm
     if (searchTerm && searchField && scoresToProcess.length > 0) {
       const term = searchTerm.toLowerCase();
       scoresToProcess = scoresToProcess.filter(sc => {
-        const fieldValue = sc[searchField] ? String(sc[searchField]).toLowerCase() : '';
-        return fieldValue.includes(term);
+        let fieldValue = '';
+        // So sánh chính xác label searchField
+        if (searchField === 'Student ID' || searchField.toLowerCase() === 'studentid' || searchField.toLowerCase() === 'student id') {
+          fieldValue = sc.StudentID ? String(sc.StudentID).toLowerCase() : '';
+        } else if (searchField === 'Subject ID' || searchField.toLowerCase() === 'subjectid' || searchField.toLowerCase() === 'subject id') {
+          fieldValue = sc.SubjectID ? String(sc.SubjectID).toLowerCase() : '';
+        } else if (searchField === 'Class ID' || searchField.toLowerCase() === 'classid' || searchField.toLowerCase() === 'class id') {
+          fieldValue = sc.ClassID ? String(sc.ClassID).toLowerCase() : '';
+        } else {
+          fieldValue = sc[searchField] ? String(sc[searchField]).toLowerCase() : '';
+        }
+        return fieldValue === term;
       });
+    }
+    // Sắp xếp theo currentSort
+    if (currentSort === 'highest') {
+      scoresToProcess.sort((a, b) => b.Score - a.Score);
+    } else if (currentSort === 'lowest') {
+      scoresToProcess.sort((a, b) => a.Score - b.Score);
     }
     setFilteredScores(scoresToProcess);
     setCurrentPage(1);
-  }, [allScores, searchTerm, searchField]);
+  }, [allScores, searchTerm, searchField, currentSort]);
 
-  useEffect(() => {
-    console.log('[ScoreContent] Filtering useEffect triggered. Dependencies:', {
-      allScoresCount: allScores.length,
-      scoreFrom,
-      scoreTo,
-      currentSort,
-      searchTerm,
-      searchField,
-    });
-
+  // Lọc theo khoảng điểm và sắp xếp khi nhấn Apply hoặc đổi sort
+  const handleApplyFilter = () => {
     let scoresToProcess = [...allScores];
-    console.log('[ScoreContent] Initial scoresToProcess count:', scoresToProcess.length);
-
-    // BƯỚC 0: LỌC THEO TÌM KIẾM CHUNG (TỪ HEADER)
-    if (searchTerm && searchField) {
-      console.log(`[ScoreContent] Applying search: term="${searchTerm}", field="${searchField}"`);
-      const termToSearch = searchTerm.toLowerCase();
-      scoresToProcess = scoresToProcess.filter(score => {
-        const fieldValue = score[searchField] ? String(score[searchField]).toLowerCase() : '';
-        const isMatch = fieldValue.includes(termToSearch);
-        // console.log(`  Checking score ID ${score.id} (${searchField}: "${fieldValue}") against "${termToSearch}". Match: ${isMatch}`);
-        return isMatch;
+    // 1. Lọc theo tìm kiếm (StudentID, SubjectID, ClassID...)
+    if (searchTerm && searchField && scoresToProcess.length > 0) {
+      const term = searchTerm.toLowerCase();
+      scoresToProcess = scoresToProcess.filter(sc => {
+        let fieldValue = '';
+        // So sánh chính xác label searchField
+        if (searchField === 'Student ID' || searchField.toLowerCase() === 'studentid' || searchField.toLowerCase() === 'student id') {
+          fieldValue = sc.StudentID ? String(sc.StudentID).toLowerCase() : '';
+        } else if (searchField === 'Subject ID' || searchField.toLowerCase() === 'subjectid' || searchField.toLowerCase() === 'subject id') {
+          fieldValue = sc.SubjectID ? String(sc.SubjectID).toLowerCase() : '';
+        } else if (searchField === 'Class ID' || searchField.toLowerCase() === 'classid' || searchField.toLowerCase() === 'class id') {
+          fieldValue = sc.ClassID ? String(sc.ClassID).toLowerCase() : '';
+        } else {
+          fieldValue = sc[searchField] ? String(sc[searchField]).toLowerCase() : '';
+        }
+        return fieldValue === term;
       });
-      console.log('[ScoreContent] Scores after search filter:', scoresToProcess.length, scoresToProcess.map(s => ({id: s.id, [searchField]: s[searchField]})));
-    } else {
-      console.log('[ScoreContent] Skipping search filter: searchTerm or searchField is falsy.');
     }
-
-    // BƯỚC 1: LỌC THEO KHOẢNG ĐIỂM
+    // 2. Lọc theo khoảng điểm
     if (scoreFrom !== '' || scoreTo !== '') {
-      console.log(`[ScoreContent] Applying score filter: from="${scoreFrom}", to="${scoreTo}"`);
       const from = scoreFrom === '' ? -Infinity : parseFloat(scoreFrom);
       const to = scoreTo === '' ? Infinity : parseFloat(scoreTo);
       scoresToProcess = scoresToProcess.filter(
-        (score) => score.score >= from && score.score <= to
+        (score) => score.Score >= from && score.Score <= to
       );
-      console.log('[ScoreContent] Scores after score range filter:', scoresToProcess.length);
     }
-
-    // BƯỚC 2: SẮP XẾP
-    if (currentSort !== 'original' && scoresToProcess.length > 0) {
-        console.log(`[ScoreContent] Applying sort: type="${currentSort}"`);
-        if (currentSort === 'highest') {
-          scoresToProcess.sort((a, b) => b.score - a.score);
-        } else if (currentSort === 'lowest') {
-          scoresToProcess.sort((a, b) => a.score - b.score);
-        }
-        console.log('[ScoreContent] Scores after sort:', scoresToProcess.map(s => ({id: s.id, score: s.score})));
+    // 3. Sắp xếp
+    if (currentSort === 'highest') {
+      scoresToProcess.sort((a, b) => b.Score - a.Score);
+    } else if (currentSort === 'lowest') {
+      scoresToProcess.sort((a, b) => a.Score - b.Score);
     }
-    
     setFilteredScores(scoresToProcess);
-    if (scoresToProcess.length > 0 && allScores.length > 0) { // Chỉ reset page nếu có thay đổi thực sự hoặc có data
-        setCurrentPage(1);
-        console.log('[ScoreContent] Set filteredScores count:', scoresToProcess.length, 'and reset to page 1.');
-    }
-  }, [allScores, scoreFrom, scoreTo, currentSort, searchTerm, searchField]);
+    setCurrentPage(1);
+  };
 
+  // Luôn sắp xếp lại filteredScores khi đổi sort, nhưng chỉ trong phạm vi đã lọc
+  useEffect(() => {
+    // Chỉ sort lại nếu đã có filter (filteredScores.length > 0)
+    if (filteredScores.length > 0) {
+      let sorted = [...filteredScores];
+      if (currentSort === 'highest') {
+        sorted.sort((a, b) => b.Score - a.Score);
+      } else if (currentSort === 'lowest') {
+        sorted.sort((a, b) => a.Score - b.Score);
+      }
+      setFilteredScores(sorted);
+    }
+    // eslint-disable-next-line
+  }, [currentSort]);
 
   const indexOfLastScore = currentPage * itemsPerPage;
   const indexOfFirstScore = indexOfLastScore - itemsPerPage;
@@ -195,27 +202,15 @@ const ScoreContent = ({ searchTerm, searchField }) => {
     setEditingScore(null);
   };
 
-  const handleApplyFilter = () => {
-    let scoresToProcess = [...allScores];
-    if (scoreFrom !== '' || scoreTo !== '') {
-      const from = scoreFrom === '' ? -Infinity : parseFloat(scoreFrom);
-      const to = scoreTo === '' ? Infinity : parseFloat(scoreTo);
-      scoresToProcess = scoresToProcess.filter(
-        (score) => score.score >= from && score.score <= to
-      );
-    }
-    if (currentSort === 'highest') {
-      scoresToProcess.sort((a, b) => b.score - a.score);
-    } else if (currentSort === 'lowest') {
-      scoresToProcess.sort((a, b) => a.score - b.score);
-    }
-    setFilteredScores(scoresToProcess);
-    setCurrentPage(1); // Luôn reset về trang 1 khi apply filter mới
-    console.log('[ScoreContent] Apply button clicked, re-filtered scores.');
-  };
-
   // DEBUG: Log trạng thái của isAddScoreModalOpen mỗi khi component render lại
   console.log('[ScoreContent] Rendering. isAddScoreModalOpen:', isAddScoreModalOpen, 'isEditScoreModalOpen:', isEditScoreModalOpen);
+
+  // Thêm hàm xử lý Enter trên search box
+  const handleSearchBoxKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleApplyFilter();
+    }
+  };
 
   return (
     <div className="score-content-container">
@@ -237,6 +232,7 @@ const ScoreContent = ({ searchTerm, searchField }) => {
       </div>
 
       <div className="controls-row">
+        {/* Chỉ giữ lại filter theo điểm và sort, xóa dropdown + search box ở đây */}
         <div className="filter-container">
           <span className="filter-label">Filter:</span>
           <input
@@ -258,7 +254,6 @@ const ScoreContent = ({ searchTerm, searchField }) => {
           />
           <button className="apply-button" onClick={handleApplyFilter}>Apply</button>
         </div>
-
         <div className="sort-container">
           <span className="sort-label">Sort:</span>
           <button className={`sort-button original ${currentSort === 'original' ? 'active' : ''}`} onClick={() => setCurrentSort('original')}>Original</button>
