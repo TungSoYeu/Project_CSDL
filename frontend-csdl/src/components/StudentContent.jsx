@@ -6,24 +6,29 @@ import DefaultAvatarIcon from '../asset/image/avatar/default-avatar.svg';
 
 // --- COMPONENT THẺ SINH VIÊN ---
 const StudentCard = ({ studentData }) => {
+  // Show DOB as date only (YYYY-MM-DD), never time
+  let dobDisplay = studentData.DOB || studentData.BirthDate || '';
+  if (typeof dobDisplay === 'string' && dobDisplay.length >= 10) {
+    dobDisplay = dobDisplay.slice(0, 10);
+  }
   return (
     <div className="student-card">
       <div className="student-card-info">
         <div className="info-group student-id-group">
           <span className="info-label">Student ID</span>
-          <span className="info-value student-id-value">{studentData.StudentID}</span>
+          <span className="info-value student-id-value">{studentData.StudentID || studentData.studentId || ''}</span>
         </div>
         <div className="info-group student-name-group">
           <span className="info-label">Full Name</span>
-          <span className="info-value student-name-value">{studentData.FullName}</span>
+          <span className="info-value student-name-value">{studentData.FullName || studentData.fullName || ''}</span>
         </div>
-        <div className="info-group student-birthdate-group">
-          <span className="info-label">Birth Date</span>
-          <span className="info-value student-birthdate-value">{studentData.BirthDate}</span>
+        <div className="info-group student-dob-group">
+          <span className="info-label">DOB</span>
+          <span className="info-value student-dob-value">{dobDisplay}</span>
         </div>
         <div className="info-group student-major-group">
           <span className="info-label">Major</span>
-          <span className="info-value student-major-value">{studentData.Major}</span>
+          <span className="info-value student-major-value">{studentData.Major || studentData.major || ''}</span>
         </div>
       </div>
     </div>
@@ -36,6 +41,8 @@ const StudentContent = ({ searchTerm, searchField }) => {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [filterName, setFilterName] = useState(''); // State cho filter box
+  const [filterField, setFilterField] = useState('Full Name'); // State cho dropdown filter
 
   // NOTE: 2. Thêm state cho AddStudentModal
   const [isAddStudentModalOpen, setIsAddStudentModalOpen] = useState(false);
@@ -49,6 +56,18 @@ const StudentContent = ({ searchTerm, searchField }) => {
 
   useEffect(() => {
     let studentsToProcess = [...allStudents];
+    // Lọc theo filterName và filterField trước (nếu có)
+    if (filterName) {
+      studentsToProcess = studentsToProcess.filter(stu => {
+        let value = '';
+        if (filterField === 'Full Name') value = stu.FullName || '';
+        else if (filterField === 'Student ID') value = stu.StudentID || '';
+        else if (filterField === 'DOB') value = stu.BirthDate || '';
+        else if (filterField === 'Major') value = stu.Major || '';
+        else value = '';
+        return value.toLowerCase().includes(filterName.toLowerCase());
+      });
+    }
     if (searchTerm && searchField && studentsToProcess.length > 0) {
       const term = String(searchTerm).toLowerCase();
       studentsToProcess = studentsToProcess.filter(stu => {
@@ -87,7 +106,7 @@ const StudentContent = ({ searchTerm, searchField }) => {
     }
     setFilteredStudents(studentsToProcess);
     setCurrentPage(1);
-  }, [allStudents, searchTerm, searchField]);
+  }, [allStudents, searchTerm, searchField, filterName, filterField]);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -103,16 +122,33 @@ const StudentContent = ({ searchTerm, searchField }) => {
   };
 
   // NOTE: 4. Thêm hàm xử lý khi thêm sinh viên mới
-  const handleAddStudentSubmit = (newStudentData) => {
-    console.log('Adding new student from modal:', newStudentData);
+  const handleAddStudentSubmit = async (newStudentData) => {
+    // Ensure all fields are present
     const newStudentEntry = {
-      ...newStudentData, // studentId, fullName, dob, major từ form
-      id: `student-${newStudentData.studentId}-${Date.now()}`, // Tạo ID duy nhất
-      avatar: DefaultAvatarIcon, // Gán avatar mặc định
+      StudentID: newStudentData.StudentID || newStudentData.studentId || '',
+      FullName: newStudentData.FullName || newStudentData.fullName || '',
+      DOB: newStudentData.DOB || newStudentData.dob || newStudentData.BirthDate || '',
+      Major: newStudentData.Major || newStudentData.major || '',
+      id: `student-${newStudentData.StudentID || newStudentData.studentId || Date.now()}`,
+      avatar: DefaultAvatarIcon,
     };
-    setAllStudents(prevStudents => [newStudentEntry, ...prevStudents]); // Thêm vào đầu danh sách
-    setIsAddStudentModalOpen(false); // Đóng modal
-    setCurrentPage(1); // Chuyển về trang đầu để thấy sinh viên mới (hoặc trang cuối)
+    try {
+      await fetch('http://localhost:3001/api/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStudentEntry),
+      });
+      // Fetch latest list from backend
+      const res = await fetch('http://localhost:3001/api/students');
+      const data = await res.json();
+      setAllStudents(data);
+      // Set to last page to show the newly added student at the end
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      setCurrentPage(totalPages);
+    } catch (e) {
+      console.error('Failed to add student to backend:', e);
+    }
+    setIsAddStudentModalOpen(false);
   };
 
   return (
@@ -129,6 +165,26 @@ const StudentContent = ({ searchTerm, searchField }) => {
           <img src={PlusIcon} alt="Add" className="add-student-icon" />
           Add Student
         </button>
+      </div>
+      {/* Filter box + dropdown */}
+      <div style={{ margin: '16px 0', display: 'flex', gap: 8 }}>
+        <select
+          value={filterField}
+          onChange={e => setFilterField(e.target.value)}
+          style={{ padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+        >
+          <option value="Full Name">Full Name</option>
+          <option value="Student ID">Student ID</option>
+          <option value="DOB">DOB</option>
+          <option value="Major">Major</option>
+        </select>
+        <input
+          type="text"
+          placeholder={`Filter by ${filterField}...`}
+          value={filterName}
+          onChange={e => setFilterName(e.target.value)}
+          style={{ padding: '8px', width: '250px', borderRadius: '4px', border: '1px solid #ccc' }}
+        />
       </div>
 
       <div className="student-list">
@@ -147,11 +203,13 @@ const StudentContent = ({ searchTerm, searchField }) => {
 
       {totalPages > 0 && (
         <div className="pagination-controls">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1} className="pagination-button" title="First Page">&#171;</button>
           <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="pagination-button">&larr;</button>
           <span className="pagination-info">
             {filteredStudents.length > 0 ? `${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, filteredStudents.length)}` : '0'} of {filteredStudents.length}
           </span>
           <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages || filteredStudents.length === 0} className="pagination-button">&rarr;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages || filteredStudents.length === 0} className="pagination-button" title="Last Page">&#187;</button>
         </div>
       )}
 

@@ -193,6 +193,7 @@
   padding: 15px 20px;
   border-left: 5px solid #4A90E2;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  position: relative;
 }
 .score-card:hover {
   transform: translateY(-2px);
@@ -264,6 +265,24 @@
 .edit-score-button:hover {
   color: #1d4ed8; 
   background-color: rgba(37, 99, 235, 0.1); 
+}
+
+.edit-score-btn {
+  margin-top: 12px;
+  padding: 6px 18px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  float: right;
+  box-shadow: 0 1px 4px rgba(25, 118, 210, 0.08);
+}
+.edit-score-btn:hover {
+  background: #1251a3;
 }
 
 .edit-score-icon-placeholder {

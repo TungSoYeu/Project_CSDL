@@ -82,14 +82,30 @@ const SubjectContent = ({ searchTerm, searchField }) => {
     }
   };
 
-  const handleAddSubjectSubmit = (newSubjectData) => {
+  const handleAddSubjectSubmit = async (newSubjectData) => {
+    // Ensure all fields are present
     const newSubjectEntry = {
-      ...newSubjectData,
-      id: `subject-${newSubjectData.subjectId}-${Date.now()}`,
+      SubjectID: newSubjectData.SubjectID || newSubjectData.subjectId || '',
+      SubjectName: newSubjectData.SubjectName || newSubjectData.subjectName || '',
+      id: `subject-${newSubjectData.SubjectID || newSubjectData.subjectId || Date.now()}`,
     };
-    setAllSubjects(prevSubjects => [newSubjectEntry, ...prevSubjects]);
+    try {
+      await fetch('http://localhost:3001/api/subjects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSubjectEntry),
+      });
+      // Fetch latest list from backend
+      const res = await fetch('http://localhost:3001/api/subjects');
+      const data = await res.json();
+      setAllSubjects(data);
+      // Set to last page to show the newly added subject at the end
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      setCurrentPage(totalPages);
+    } catch (e) {
+      console.error('Failed to add subject to backend:', e);
+    }
     setIsAddSubjectModalOpen(false);
-    setCurrentPage(1);
   };
 
   return (
@@ -119,11 +135,13 @@ const SubjectContent = ({ searchTerm, searchField }) => {
 
       {totalPages > 0 && (
         <div className="pagination-controls">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1} className="pagination-button" title="First Page">&#171;</button>
           <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="pagination-button">&larr;</button>
           <span className="pagination-info">
             {filteredSubjects.length > 0 ? `${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, filteredSubjects.length)}` : '0'} of {filteredSubjects.length}
           </span>
           <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages || filteredSubjects.length === 0} className="pagination-button">&rarr;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages || filteredSubjects.length === 0} className="pagination-button" title="Last Page">&#187;</button>
         </div>
       )}
 

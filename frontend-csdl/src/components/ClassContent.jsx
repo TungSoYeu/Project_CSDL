@@ -92,14 +92,31 @@ const ClassContent = ({ searchTerm, searchField }) => {
   };
 
   // NOTE: Hàm xử lý khi thêm lớp học mới
-  const handleAddClassSubmit = (newClassData) => {
+  const handleAddClassSubmit = async (newClassData) => {
+    // Ensure all fields are present
     const newClassEntry = {
-      ...newClassData, 
-      id: `class-${newClassData.classId}-${Date.now()}`,
+      ClassID: newClassData.ClassID || newClassData.classId || '',
+      SubjectID: newClassData.SubjectID || newClassData.subjectId || '',
+      TeacherID: newClassData.TeacherID || newClassData.teacherId || '',
+      id: `class-${newClassData.ClassID || newClassData.classId || Date.now()}`,
     };
-    setAllClasses(prevClasses => [newClassEntry, ...prevClasses]);
+    try {
+      await fetch('http://localhost:3001/api/classes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newClassEntry),
+      });
+      // Fetch latest list from backend
+      const res = await fetch('http://localhost:3001/api/classes');
+      const data = await res.json();
+      setAllClasses(data);
+      // Set to last page to show the newly added class at the end
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      setCurrentPage(totalPages);
+    } catch (e) {
+      console.error('Failed to add class to backend:', e);
+    }
     setIsAddClassModalOpen(false);
-    setCurrentPage(1);
   };
 
   return (
@@ -130,11 +147,13 @@ const ClassContent = ({ searchTerm, searchField }) => {
 
       {totalPages > 0 && (
         <div className="pagination-controls">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1} className="pagination-button" title="First Page">&#171;</button>
           <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="pagination-button">&larr;</button>
           <span className="pagination-info">
             {filteredClasses.length > 0 ? `${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, filteredClasses.length)}` : '0'} of {filteredClasses.length}
           </span>
           <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages || filteredClasses.length === 0} className="pagination-button">&rarr;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages || filteredClasses.length === 0} className="pagination-button" title="Last Page">&#187;</button>
         </div>
       )}
 

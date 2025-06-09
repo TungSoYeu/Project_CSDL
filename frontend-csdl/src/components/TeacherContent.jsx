@@ -89,15 +89,31 @@ const TeacherContent = ({ searchTerm, searchField }) => {
   };
 
   // NOTE: Hàm xử lý khi thêm giáo viên mới
-  const handleAddTeacherSubmit = (newTeacherData) => {
+  const handleAddTeacherSubmit = async (newTeacherData) => {
+    // Ensure all fields are present
     const newTeacherEntry = {
-      ...newTeacherData, 
-      id: `teacher-${newTeacherData.teacherId}-${Date.now()}`,
+      TeacherID: newTeacherData.TeacherID || newTeacherData.teacherId || '',
+      FullName: newTeacherData.FullName || newTeacherData.fullName || '',
+      id: `teacher-${newTeacherData.TeacherID || newTeacherData.teacherId || Date.now()}`,
       avatar: DefaultAvatarIcon,
     };
-    setAllTeachers(prevTeachers => [newTeacherEntry, ...prevTeachers]);
+    try {
+      await fetch('http://localhost:3001/api/teachers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTeacherEntry),
+      });
+      // Fetch latest list from backend
+      const res = await fetch('http://localhost:3001/api/teachers');
+      const data = await res.json();
+      setAllTeachers(data);
+      // Set to last page to show the newly added teacher at the end
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      setCurrentPage(totalPages);
+    } catch (e) {
+      console.error('Failed to add teacher to backend:', e);
+    }
     setIsAddTeacherModalOpen(false);
-    setCurrentPage(1);
   };
 
   return (
@@ -128,11 +144,13 @@ const TeacherContent = ({ searchTerm, searchField }) => {
 
       {totalPages > 0 && (
         <div className="pagination-controls">
+          <button onClick={() => paginate(1)} disabled={currentPage === 1} className="pagination-button" title="First Page">&#171;</button>
           <button onClick={() => paginate(currentPage - 1)} disabled={currentPage === 1} className="pagination-button">&larr;</button>
           <span className="pagination-info">
             {filteredTeachers.length > 0 ? `${indexOfFirstItem + 1}-${Math.min(indexOfLastItem, filteredTeachers.length)}` : '0'} of {filteredTeachers.length}
           </span>
           <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages || filteredTeachers.length === 0} className="pagination-button">&rarr;</button>
+          <button onClick={() => paginate(totalPages)} disabled={currentPage === totalPages || filteredTeachers.length === 0} className="pagination-button" title="Last Page">&#187;</button>
         </div>
       )}
 

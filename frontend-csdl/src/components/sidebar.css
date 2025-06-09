@@ -27,7 +27,7 @@
 }
 
 /* Avatar user */
-.header-actions .user-box {
+/* .header-actions .user-box {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,17 +44,19 @@
 
 .header-actions .user-box:hover {
     background: #f5f6fa;
-}
+} */
 
 .header-actions .avatar {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
+    border-radius: 50%; /* Đảm bảo hình tròn */
+    aspect-ratio: 1 / 1;
+    display: block;
 }
 
 /* Nút notification bell */
-.header-actions .notification-btn {
+/* .header-actions .notification-btn {
     background: none;
     border: none;
     padding: 0;
@@ -73,13 +75,7 @@
 
 .header-actions .notification-btn:hover {
     background-color: #f0f2f5;
-}
-
-.header-actions .header-icon {
-    width: 24px;
-    height: 24px;
-    filter: grayscale(70%) opacity(0.8);
-}
+} */
 
 /* Sidebar navigation styles */
 .sidebar-nav {
@@ -188,15 +184,7 @@
     background: #f5f6fa;
 }
 
-.sidebar-header .avatar {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-}
-
 /* Đưa user box lên góc trên cùng bên phải, không hiện popup, chỉ là nút avatar */
-/* Avatar cố định góc trên phải, không có popup */
 .user-box-fixed-top {
     position: fixed;
     top: 18px;

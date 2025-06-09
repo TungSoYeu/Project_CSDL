@@ -182,7 +182,7 @@
   /* 1. Search Bar Box */
   .search-box {
     width: 100%;
-    max-width: 701px;
+    max-width: 940px;
     padding-left: var(--medium-padding); /* Padding lớn hơn bên trái cho icon */
     flex-shrink: 1; 
   }

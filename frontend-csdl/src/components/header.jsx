@@ -73,38 +73,39 @@ function Header({ searchTerm, searchField, onSearchChange, onSearchFieldChange, 
   };
 
   return (
-    <header className="header">
-      <div className="header-item search-box">
-        <form onSubmit={e => e.preventDefault()}>
-          <img src={searchIcon} alt="Search" className="header-icon search-icon" />
-          <input 
-            type="search" 
-            placeholder="Search"
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)} // Gọi hàm từ App.jsx
+    <header className="main-header">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+        <div className="header-item search-box">
+          <form onSubmit={e => e.preventDefault()}>
+            <img src={searchIcon} alt="Search" className="header-icon search-icon" />
+            <input 
+              type="search" 
+              placeholder="Search"
+              value={searchTerm}
+              onChange={(e) => onSearchChange(e.target.value)} // Gọi hàm từ App.jsx
             />
-        </form>
-      </div>
-
-      <div className="header-actions">
-        {/* Render component Dropdown và truyền icon vào */}
-        <StudentIdDropdown 
-          dropdownIconSrc={dropdownIcon}
-          options={currentSearchOptions}
-          initialValue={searchField} // searchField từ App.jsx làm giá trị ban đầu
-          onChange={onSearchFieldChange} // onSearchFieldChange từ App.jsx
-        />
-
-        <div className="header-item action-box notification-box">
-          <button className="notification-btn" aria-label="Notifications">
-            <img src={notiIcon} alt="Notifications" className="header-icon" />
-          </button>
+          </form>
         </div>
-        <div
-          className="user-box"
-          onClick={() => navigate('/user-info')}
-        >
-          <img src={profilePicture} alt="User Avatar" className="avatar" />
+        <div className="header-actions">
+          {/* Render component Dropdown và truyền icon vào */}
+          <StudentIdDropdown 
+            dropdownIconSrc={dropdownIcon}
+            options={currentSearchOptions}
+            initialValue={searchField} // searchField từ App.jsx làm giá trị ban đầu
+            onChange={onSearchFieldChange} // onSearchFieldChange từ App.jsx
+          />
+          <div className="header-item action-box notification-box">
+            <button className="notification-btn" aria-label="Notifications">
+              <img src={notiIcon} alt="Notifications" className="header-icon" />
+            </button>
+          </div>
+          <div
+            className="user-box"
+            onClick={() => navigate('/user-info')}
+            style={{ width: 40, height: 40, borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <img src={profilePicture} alt="User Avatar" className="avatar" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover' }} />
+          </div>
         </div>
       </div>
     </header>

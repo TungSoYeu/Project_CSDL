@@ -6,7 +6,7 @@ import AddScoreModal from './AddScoreModal';
 import EditScoreModal from './EditScoreModal';
 
 // --- COMPONENT THẺ ĐIỂM ---
-const ScoreCard = ({ scoreData }) => {
+const ScoreCard = ({ scoreData, onEdit }) => {
   return (
     <div className="score-card">
       <div className="score-card-info">
@@ -35,6 +35,9 @@ const ScoreCard = ({ scoreData }) => {
           <span className="info-value score-score-value">{scoreData.Score}</span>
         </div>
       </div>
+      <button className="edit-score-btn" onClick={() => onEdit(scoreData)}>
+        Edit
+      </button>
     </div>
   );
 };
@@ -162,14 +165,30 @@ const ScoreContent = ({ searchTerm, searchField }) => {
   };
 
   // NOTE: Hàm xử lý khi submit form từ modal
-  const handleAddScoreSubmit = (newScoreData) => {
-    console.log('Adding new score:', newScoreData);
+  const handleAddScoreSubmit = async (newScoreData) => {
     const newScoreEntry = {
-      ...newScoreData,
-      id: `score-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // Tạo ID duy nhất hơn
+      StudentID: newScoreData.StudentID || newScoreData.studentId || '',
+      SubjectID: newScoreData.SubjectID || newScoreData.subjectId || '',
+      ClassID: newScoreData.ClassID || newScoreData.classId || '',
+      Score: newScoreData.Score || newScoreData.score || '',
+      id: `score-${newScoreData.StudentID || newScoreData.studentId || Date.now()}`,
     };
-    setAllScores(prevScores => [...prevScores, newScoreEntry]);
-    setIsAddScoreModalOpen(false); 
+    try {
+      await fetch('http://localhost:3001/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newScoreEntry),
+      });
+      // Fetch latest list from backend
+      const res = await fetch('http://localhost:3001/api/scores');
+      const data = await res.json();
+      setAllScores(data);
+      setFilteredScores(data); // Ensure filteredScores is updated
+      setCurrentPage(1); // Chuyển về trang đầu để score mới hiển thị lên đầu
+    } catch (e) {
+      console.error('Failed to add score to backend:', e);
+    }
+    setIsAddScoreModalOpen(false);
   };
 
   // NOTE: 4. Thêm Hàm Xử Lý cho Edit Modal
@@ -266,9 +285,9 @@ const ScoreContent = ({ searchTerm, searchField }) => {
         {currentScoresToDisplay.length > 0 ? (
           currentScoresToDisplay.map((score) => (
             <ScoreCard 
-            key={score.id} 
-            scoreData={score}
-            onEdit={handleOpenEditModal}
+              key={score.id} 
+              scoreData={score}
+              onEdit={handleOpenEditModal}
             />
           ))
         ) : (
@@ -279,9 +298,18 @@ const ScoreContent = ({ searchTerm, searchField }) => {
       {totalPages > 1 && (
         <div className="pagination-controls">
           <button
+            onClick={() => paginate(1)}
+            disabled={currentPage === 1}
+            className="pagination-button"
+            title="First Page"
+          >
+            &#171;
+          </button>
+          <button
             onClick={() => paginate(currentPage - 1)}
             disabled={currentPage === 1}
             className="pagination-button"
+            title="Previous Page"
           >
             &larr;
           </button>
@@ -292,8 +320,17 @@ const ScoreContent = ({ searchTerm, searchField }) => {
             onClick={() => paginate(currentPage + 1)}
             disabled={currentPage === totalPages || filteredScores.length === 0}
             className="pagination-button"
+            title="Next Page"
           >
             &rarr;
+          </button>
+          <button
+            onClick={() => paginate(totalPages)}
+            disabled={currentPage === totalPages || filteredScores.length === 0}
+            className="pagination-button"
+            title="Last Page"
+          >
+            &#187;
           </button>
         </div>
       )}
